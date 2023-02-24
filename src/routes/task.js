@@ -44,7 +44,22 @@ simpleRouter.delete('/:id', async (req,res)=>{
         checklist.save();      
         res.redirect(`/checklists/${checklist._id}`);
     }catch(error){
-        res.status(422).render('pages/error', {error: error})
+        let errors = error.errors;
+        res.status(422).render('pages/error', {error: errors})
+    }
+
+})
+
+simpleRouter.put('/:id', async(req, res) =>{
+    let task = await Task.findById(req.params.id);
+    try{
+        task.set(req.body.task);
+        await task.save();
+        res.status(200).json({ task });
+    }catch(error){
+        console.log(error);
+        let errors = error.errors;
+        res.status(422).json({task:{...errors }})
     }
 
 })
